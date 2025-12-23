@@ -19,6 +19,10 @@ class Plugin extends Base
         $this->actionManager->getAction('\Kanboard\Action\TaskCreation')->addEvent(WebhookHandler::EVENT_ISSUE_OPENED);
         $this->actionManager->getAction('\Kanboard\Action\TaskOpen')->addEvent(WebhookHandler::EVENT_ISSUE_REOPENED);
 
+        $this->actionManager->register(
+            new \Kanboard\Plugin\GithubWebhook\Action\TaskMoveColumnCommit($this->container)
+        );
+
         $this->template->hook->attach('template:project:integrations', 'GithubWebhook:project/integrations');
         $this->route->addRoute('/webhook/github/:project_id/:token', 'Webhook', 'handler', 'GithubWebhook');
         $this->applicationAccessMap->add('Webhook', 'handler', Role::APP_PUBLIC);
