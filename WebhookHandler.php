@@ -97,13 +97,13 @@ class WebhookHandler extends Base
             }
 
             $this->dispatcher->dispatch(
-                self::EVENT_COMMIT,
                 new GenericEvent(array(
                     'task_id' => $task_id,
                     'commit_message' => $commit['message'],
                     'commit_url' => $commit['url'],
                     'comment' => $commit['message']."\n\n[".t('Commit made by @%s on Github', $commit['author']['username']).']('.$commit['url'].')'
-                ) + $task)
+                ) + $task),
+                self::EVENT_COMMIT
             );
         }
 
@@ -174,8 +174,8 @@ class WebhookHandler extends Base
             );
 
             $this->dispatcher->dispatch(
-                self::EVENT_ISSUE_COMMENT,
-                new GenericEvent($event)
+                new GenericEvent($event),
+                self::EVENT_ISSUE_COMMENT
             );
 
             return true;
@@ -201,8 +201,8 @@ class WebhookHandler extends Base
         );
 
         $this->dispatcher->dispatch(
-            self::EVENT_ISSUE_OPENED,
-            new GenericEvent($event)
+            new GenericEvent($event),
+            self::EVENT_ISSUE_OPENED
         );
 
         return true;
@@ -227,8 +227,8 @@ class WebhookHandler extends Base
             );
 
             $this->dispatcher->dispatch(
-                self::EVENT_ISSUE_CLOSED,
-                new GenericEvent($event)
+                new GenericEvent($event),
+                self::EVENT_ISSUE_CLOSED
             );
 
             return true;
@@ -256,8 +256,8 @@ class WebhookHandler extends Base
             );
 
             $this->dispatcher->dispatch(
-                self::EVENT_ISSUE_REOPENED,
-                new GenericEvent($event)
+                new GenericEvent($event),
+                self::EVENT_ISSUE_REOPENED
             );
 
             return true;
@@ -287,8 +287,8 @@ class WebhookHandler extends Base
             );
 
             $this->dispatcher->dispatch(
-                self::EVENT_ISSUE_ASSIGNEE_CHANGE,
-                new GenericEvent($event)
+                new GenericEvent($event),
+                self::EVENT_ISSUE_ASSIGNEE_CHANGE
             );
 
             return true;
@@ -317,8 +317,8 @@ class WebhookHandler extends Base
             );
 
             $this->dispatcher->dispatch(
-                self::EVENT_ISSUE_ASSIGNEE_CHANGE,
-                new GenericEvent($event)
+                new GenericEvent($event),
+                self::EVENT_ISSUE_ASSIGNEE_CHANGE
             );
 
             return true;
@@ -348,8 +348,8 @@ class WebhookHandler extends Base
             );
 
             $this->dispatcher->dispatch(
-                self::EVENT_ISSUE_LABEL_CHANGE,
-                new GenericEvent($event)
+                new GenericEvent($event),
+                self::EVENT_ISSUE_LABEL_CHANGE
             );
 
             return true;
@@ -380,8 +380,8 @@ class WebhookHandler extends Base
             );
 
             $this->dispatcher->dispatch(
-                self::EVENT_ISSUE_LABEL_CHANGE,
-                new GenericEvent($event)
+                new GenericEvent($event),
+                self::EVENT_ISSUE_LABEL_CHANGE
             );
 
             return true;
