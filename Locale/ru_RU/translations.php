@@ -12,6 +12,6 @@ return array(
     'Github issue comment created' => 'Github issue комментарий создан',
     'Github Issue' => 'Вопрос на Github',
     'Commit made by @%s on Github' => 'Коммит сделан польз. @%s на Github',
-    'Move task to column on Github commit' => 'Переместить задачу в колонку при коммите Github',
+    'Move the task to another column on Github commit' => 'Перемещать задачу в другую колонку при коммите в Github',
 );
 

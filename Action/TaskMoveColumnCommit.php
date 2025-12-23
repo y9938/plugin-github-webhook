@@ -20,7 +20,7 @@ class TaskMoveColumnCommit extends Base
      */
     public function getDescription()
     {
-        return t('Move task to column on Github commit');
+        return t('Move the task to another column on Github commit');
     }
 
     /**
@@ -58,8 +58,7 @@ class TaskMoveColumnCommit extends Base
     public function getEventRequiredParameters()
     {
         return array(
-            'task_id',
-            'project_id',
+            'task_ids',
         );
     }
 
@@ -72,14 +71,37 @@ class TaskMoveColumnCommit extends Base
      */
     public function doAction(array $data)
     {
-        return $this->taskPositionModel->movePosition(
-            $data['task']['project_id'],
-            $data['task_id'],
-            $this->getParam('column_id'),
-            1,  // position at top of column
-            $data['task']['swimlane_id'],
-            false  // don't trigger events to avoid loops
-        );
+        if (empty($data['task_ids']) || !is_array($data['task_ids'])) {
+            return false;
+        }
+
+        $success_count = 0;
+
+        foreach ($data['task_ids'] as $task_id) {
+            if (!isset($data['tasks'][$task_id])) {
+                $task = $this->taskFinderModel->getById($task_id);
+                if (empty($task)) {
+                    continue;
+                }
+            } else {
+                $task = $data['tasks'][$task_id];
+            }
+
+            $result = $this->taskPositionModel->movePosition(
+                $task['project_id'],
+                $task['id'],
+                $this->getParam('column_id'),
+                1,
+                $task['swimlane_id'],
+                false
+            );
+
+            if ($result) {
+                $success_count++;
+            }
+        }
+
+        return $success_count > 0;
     }
 
     /**
@@ -91,7 +113,6 @@ class TaskMoveColumnCommit extends Base
      */
     public function hasRequiredCondition(array $data)
     {
-        // Always execute - we just want to move any task mentioned in commits
-        return true;
+        return !empty($data['task_ids']) && is_array($data['task_ids']);
     }
 }

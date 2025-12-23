@@ -79,35 +79,57 @@ class WebhookHandler extends Base
             return false;
         }
 
+        $has_dispatched = false;
+
         foreach ($payload['commits'] as $commit) {
-            $task_id = $this->taskModel->getTaskIdFromText($commit['message']);
-
-            if (empty($task_id)) {
+            // Extract ALL task IDs from commit message (supports #123, #124, #125)
+            preg_match_all('/#(\d+)/', $commit['message'], $matches);
+            
+            if (empty($matches[1])) {
                 continue;
             }
 
-            $task = $this->taskFinderModel->getById($task_id);
+            $task_ids = array_unique($matches[1]); // Remove duplicates
+            $valid_task_ids = [];
+            $tasks_data = [];
 
-            if (empty($task)) {
+            // Validate each task exists and belongs to this project
+            foreach ($task_ids as $task_id) {
+                $task = $this->taskFinderModel->getById($task_id);
+                
+                if (empty($task)) {
+                    continue;
+                }
+
+                if ($task['project_id'] != $this->project_id) {
+                    continue;
+                }
+
+                $valid_task_ids[] = (int)$task_id;
+                $tasks_data[$task_id] = $task;
+            }
+
+            if (empty($valid_task_ids)) {
                 continue;
             }
 
-            if ($task['project_id'] != $this->project_id) {
-                continue;
-            }
-
+            // Dispatch single event with ALL task IDs
             $this->dispatcher->dispatch(
                 new GenericEvent(array(
-                    'task_id' => $task_id,
+                    'task_ids' => $valid_task_ids,
+                    'tasks' => $tasks_data,
                     'commit_message' => $commit['message'],
                     'commit_url' => $commit['url'],
-                    'comment' => $commit['message']."\n\n[".t('Commit made by @%s on Github', $commit['author']['username']).']('.$commit['url'].')'
-                ) + $task),
+                    'commit_author' => $commit['author']['username'],
+                    'project_id' => $this->project_id,
+                )),
                 self::EVENT_COMMIT
             );
+
+            $has_dispatched = true;
         }
 
-        return true;
+        return $has_dispatched;
     }
 
     /**

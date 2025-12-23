@@ -50,7 +50,7 @@ When an event occurs on Github, an action can be performed on Kanboard.
 - Create a comment from an external provider
 - Close a task
 - Open a task
-- Move the task to a column on Github commit
+- Move the task to another column on Github commit
 
 ### Configuration on Kanboard
 
@@ -128,9 +128,10 @@ Note: The username must be the same between Github and Kanboard and the user mus
 If the username is the same between Github and Kanboard the comment author will be assigned, otherwise there is no author.
 The user also have to be member of the project in Kanboard.
 
-#### Move a task to a specific column when a commit is pushed to Github
+#### Move the task to another column when a commit pushed to Github
 
-* Choose the event: **Github commit received**
-* Choose the action: **Move the task to a column**
+- Choose the event: **Github commit received**
+- Choose the action: **Move the task to another column on Github commit**
+- Choose the destination column
 
-When a commit message contains a Kanboard task reference (e.g., `#123`), the task is automatically moved to the column you select.
+When a commit message contains one or more Kanboard task references (e.g., `#123` or `Refs: #123, #124`), all referenced tasks will be moved to the column you select.
