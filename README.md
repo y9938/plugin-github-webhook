@@ -72,6 +72,15 @@ Go to your project settings page, on the left choose "Webhooks & Services", then
 Each time an event happens, Github will send an event to Kanboard now.
 The Kanboard webhook url is protected by a random token.
 
+**Optional: Webhook signature**
+
+Set the same **webhook secret** in two places:
+
+1. **Kanboard** — project Integrations page, field *GitHub webhook secret*
+2. **GitHub** — webhook settings, field *Secret*
+
+The secret is not sent in the URL. If you set it in Kanboard, the plugin will require a valid signature on every request (GitHub sends the `X-Hub-Signature-256` header when the webhook has a Secret). Requests without it or with an invalid signature are rejected.
+
 Everything else is handled by automatic actions in your Kanboard project settings.
 
 ### Examples

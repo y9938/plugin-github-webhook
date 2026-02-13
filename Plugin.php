@@ -58,16 +58,16 @@ class Plugin extends Base
 
     public function getPluginVersion()
     {
-        return '1.0.6';
+        return '1.1.0';
     }
 
     public function getPluginHomepage()
     {
-        return 'https://github.com/kanboard/plugin-github-webhook';
+        return 'https://github.com/y9938/plugin-github-webhook';
     }
 
     public function getCompatibleVersion()
     {
-        return '>=1.0.37';
+        return '>=1.2.16';
     }
 }
