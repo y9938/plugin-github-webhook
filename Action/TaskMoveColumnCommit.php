@@ -92,8 +92,7 @@ class TaskMoveColumnCommit extends Base
                 $task['id'],
                 $this->getParam('column_id'),
                 1,
-                $task['swimlane_id'],
-                false
+                $task['swimlane_id']
             );
 
             if ($result) {

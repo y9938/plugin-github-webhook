@@ -12,7 +12,7 @@ Author
 Requirements
 ------------
 
-- Kanboard >= 1.0.37
+- Kanboard >= 1.2.16
 - Github webhooks configured for a project
 
 Installation
