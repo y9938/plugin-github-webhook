@@ -1,6 +1,8 @@
 Github Webhook
 ==============
 
+> This is a maintained fork of [kanboard/plugin-github-webhook](https://github.com/kanboard/plugin-github-webhook), which is no longer actively maintained.
+
 Bind Github webhook events to Kanboard automatic actions.
 
 Author
@@ -21,8 +23,8 @@ Installation
 You have the choice between 3 methods:
 
 1. Install the plugin from the Kanboard plugin manager in one click
-2. Download the zip file and decompress everything under the directory `plugins/GithubWebhook`
-3. Clone this repository into the folder `plugins/GithubWebhook`
+2. Download the zip file and decompress everything under the directory `plugins/GithubWebhookPlus`
+3. Clone this repository into the folder `plugins/GithubWebhookPlus`
 
 Note: Plugin folder is case-sensitive.
 

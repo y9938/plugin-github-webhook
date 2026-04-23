@@ -2,7 +2,7 @@
 
 require_once 'tests/units/Base.php';
 
-use Kanboard\Plugin\GithubWebhook\WebhookHandler;
+use Kanboard\Plugin\GithubWebhookPlus\WebhookHandler;
 use Kanboard\Model\TaskCreationModel;
 use Kanboard\Model\ProjectModel;
 use Kanboard\Model\ProjectUserRoleModel;

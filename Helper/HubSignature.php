@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanboard\Plugin\GithubWebhook\Helper;
+namespace Kanboard\Plugin\GithubWebhookPlus\Helper;
 
 /**
  * GitHub X-Hub-Signature-256 verification (HMAC-SHA256).

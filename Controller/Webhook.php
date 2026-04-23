@@ -1,11 +1,11 @@
 <?php
 
-namespace Kanboard\Plugin\GithubWebhook\Controller;
+namespace Kanboard\Plugin\GithubWebhookPlus\Controller;
 
 use Kanboard\Controller\BaseController;
 use Kanboard\Core\Controller\AccessForbiddenException;
-use Kanboard\Plugin\GithubWebhook\Helper\HubSignature;
-use Kanboard\Plugin\GithubWebhook\WebhookHandler;
+use Kanboard\Plugin\GithubWebhookPlus\Helper\HubSignature;
+use Kanboard\Plugin\GithubWebhookPlus\WebhookHandler;
 
 /**
  * Webhook Controller

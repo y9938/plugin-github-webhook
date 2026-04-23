@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanboard\Plugin\GithubWebhook;
+namespace Kanboard\Plugin\GithubWebhookPlus;
 
 use Kanboard\Core\Base;
 use Kanboard\Event\GenericEvent;

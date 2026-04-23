@@ -1,9 +1,9 @@
-name := "GithubWebhook"
-title := "Github Webhook"
-version := "1.1.1"
+name := "GithubWebhookPlus"
+title := "Github Webhook Plus"
+version := "1.1.2"
 compatible_version := "1.2.16"
-repo := "y9938/plugin-github-webhook"
-plugin_key := "github-webhook"
+repo := "y9938/plugin-github-webhook-plus"
+plugin_key := "github-webhook-plus"
 website_repo := "kanboard/website"
 website_dir := env('WEBSITE_DIR', env('HOME', '') + '/diff_repo_external/kanboard-website')
 
@@ -12,7 +12,7 @@ release notes:
     @git tag -a "v{{version}}" -m "Plugin {{title}} v{{version}}"
     @git push origin "v{{version}}"
     @git archive "v{{version}}" --format=zip --prefix={{name}}/ -o {{name}}-{{version}}.zip
-    @gh release create "v{{version}}" "{{name}}-{{version}}.zip" --repo {{repo}} --verify-tag --title "Plugin GitHub Webhook v{{version}}" --notes "{{notes}}"
+    @gh release create "v{{version}}" "{{name}}-{{version}}.zip" --repo {{repo}} --verify-tag --title "Plugin {{title}} v{{version}}" --notes "{{notes}}"
 
 # Create a pull request on the website repository
 [script]

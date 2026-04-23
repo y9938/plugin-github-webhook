@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanboard\Plugin\GithubWebhook;
+namespace Kanboard\Plugin\GithubWebhookPlus;
 
 use Kanboard\Core\Plugin\Base;
 use Kanboard\Core\Security\Role;
@@ -20,11 +20,11 @@ class Plugin extends Base
         $this->actionManager->getAction('\Kanboard\Action\TaskOpen')->addEvent(WebhookHandler::EVENT_ISSUE_REOPENED);
 
         $this->actionManager->register(
-            new \Kanboard\Plugin\GithubWebhook\Action\TaskMoveColumnCommit($this->container)
+            new \Kanboard\Plugin\GithubWebhookPlus\Action\TaskMoveColumnCommit($this->container)
         );
 
-        $this->template->hook->attach('template:project:integrations', 'GithubWebhook:project/integrations');
-        $this->route->addRoute('/webhook/github/:project_id/:token', 'Webhook', 'handler', 'GithubWebhook');
+        $this->template->hook->attach('template:project:integrations', 'GithubWebhookPlus:project/integrations');
+        $this->route->addRoute('/webhook/github/:project_id/:token', 'Webhook', 'handler', 'GithubWebhookPlus');
         $this->applicationAccessMap->add('Webhook', 'handler', Role::APP_PUBLIC);
     }
 
@@ -43,7 +43,7 @@ class Plugin extends Base
 
     public function getPluginName()
     {
-        return 'Github Webhook';
+        return 'Github Webhook Plus';
     }
 
     public function getPluginDescription()
@@ -58,12 +58,12 @@ class Plugin extends Base
 
     public function getPluginVersion()
     {
-        return '1.1.1';
+        return '1.1.2';
     }
 
     public function getPluginHomepage()
     {
-        return 'https://github.com/y9938/plugin-github-webhook';
+        return 'https://github.com/y9938/plugin-github-webhook-plus';
     }
 
     public function getCompatibleVersion()

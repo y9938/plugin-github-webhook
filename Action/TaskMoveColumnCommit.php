@@ -1,14 +1,14 @@
 <?php
 
-namespace Kanboard\Plugin\GithubWebhook\Action;
+namespace Kanboard\Plugin\GithubWebhookPlus\Action;
 
 use Kanboard\Action\Base;
-use Kanboard\Plugin\GithubWebhook\WebhookHandler;
+use Kanboard\Plugin\GithubWebhookPlus\WebhookHandler;
 
 /**
  * Move task to a specific column when mentioned in a Github commit
  *
- * @package Kanboard\Plugin\GithubWebhook\Action
+ * @package Kanboard\Plugin\GithubWebhookPlus\Action
  */
 class TaskMoveColumnCommit extends Base
 {
