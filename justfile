@@ -19,15 +19,20 @@ release notes:
 plugins-pr:
     set -euo pipefail
     fork_owner="$(gh api user --jq .login)"
+    fork_repo="${fork_owner}/website"
+    if ! gh repo view "$fork_repo" >/dev/null 2>&1; then
+      gh repo fork "{{website_repo}}" --clone=false
+    fi
     if [ ! -d "{{website_dir}}/.git" ]; then
-      git clone "git@github.com:{{website_repo}}.git" "{{website_dir}}"
+      git clone "git@github.com:${fork_repo}.git" "{{website_dir}}"
     fi
     cd "{{website_dir}}"
-
-    if ! git remote get-url upstream >/dev/null 2>&1; then
-      gh repo fork --remote
+    git remote set-url origin "git@github.com:${fork_repo}.git"
+    if git remote get-url upstream >/dev/null 2>&1; then
+      git remote set-url upstream "git@github.com:{{website_repo}}.git"
+    else
+      git remote add upstream "git@github.com:{{website_repo}}.git"
     fi
-
     git fetch upstream
     branch="chore/update-github-webhook-v{{version}}"
     git checkout -B "$branch" upstream/main
