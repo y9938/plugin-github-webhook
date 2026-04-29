@@ -39,6 +39,7 @@ class Plugin extends Base
         $this->eventManager->register(WebhookHandler::EVENT_ISSUE_ASSIGNEE_CHANGE, t('Github issue assignee change'));
         $this->eventManager->register(WebhookHandler::EVENT_ISSUE_LABEL_CHANGE, t('Github issue label change'));
         $this->eventManager->register(WebhookHandler::EVENT_ISSUE_COMMENT, t('Github issue comment created'));
+        $this->eventManager->register(WebhookHandler::EVENT_PULL_REQUEST_MERGED, t('Github pull request merged'));
     }
 
     public function getPluginName()

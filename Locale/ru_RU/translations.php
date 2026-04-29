@@ -7,11 +7,11 @@ return array(
     'Github issue reopened' => 'Github: проблема переоткрыта',
     'Github issue assignee change' => 'Github: сменить ответственного за проблему',
     'Github issue label change' => 'Github: ярлык проблемы изменен',
+    'Github pull request merged' => 'Github: pull request объединен',
     'Github webhooks' => 'Github webhooks',
     'Help on Github webhooks' => 'Помощь по Github webhooks',
     'Github issue comment created' => 'Github issue комментарий создан',
     'Github Issue' => 'Вопрос на Github',
     'Commit made by @%s on Github' => 'Коммит сделан польз. @%s на Github',
-    'Move the task to another column on Github commit' => 'Перемещать задачу в другую колонку при коммите в Github',
+    'Move the task to another column on Github reference' => 'Перемещать задачу в другую колонку при упоминании задачи в Github',
 );
-

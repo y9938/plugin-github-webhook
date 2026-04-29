@@ -20,7 +20,7 @@ class TaskMoveColumnCommit extends Base
      */
     public function getDescription()
     {
-        return t('Move the task to another column on Github commit');
+        return t('Move the task to another column on Github reference');
     }
 
     /**
@@ -33,6 +33,7 @@ class TaskMoveColumnCommit extends Base
     {
         return array(
             WebhookHandler::EVENT_COMMIT,
+            WebhookHandler::EVENT_PULL_REQUEST_MERGED,
         );
     }
 
