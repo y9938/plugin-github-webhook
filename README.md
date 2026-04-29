@@ -43,6 +43,7 @@ When an event occurs on Github, an action can be performed on Kanboard.
 - Github issue assignee change
 - Github issue label change
 - Github issue comment created
+- Github pull request merged
 
 ### List of available actions
 
@@ -52,7 +53,7 @@ When an event occurs on Github, an action can be performed on Kanboard.
 - Create a comment from an external provider
 - Close a task
 - Open a task
-- Move the task to another column on Github commit
+- Move the task to another column on Github reference
 
 ### Configuration on Kanboard
 
@@ -142,7 +143,15 @@ The user also have to be member of the project in Kanboard.
 #### Move the task to another column when a commit pushed to Github
 
 - Choose the event: **Github commit received**
-- Choose the action: **Move the task to another column on Github commit**
+- Choose the action: **Move the task to another column on Github reference**
 - Choose the destination column
 
 When a commit message contains one or more Kanboard task references (e.g., `#123` or `Refs: #123, #124`), all referenced tasks will be moved to the column you select.
+
+#### Move the task to another column when a pull request from a task branch is merged
+
+- Choose the event: **Github pull request merged**
+- Choose the action: **Move the task to another column on Github reference**
+- Choose the destination column
+
+When a pull request is merged from a source branch named `task/<id>` (e.g., `task/123` or `task/123-fix-webhook`), the referenced task will be moved to the column you select.

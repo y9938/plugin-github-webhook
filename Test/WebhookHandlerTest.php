@@ -2,6 +2,7 @@
 
 require_once 'tests/units/Base.php';
 
+use KanboardTests\units\Base;
 use Kanboard\Plugin\GithubWebhookPlus\WebhookHandler;
 use Kanboard\Model\TaskCreationModel;
 use Kanboard\Model\ProjectModel;
@@ -354,6 +355,91 @@ class WebhookHandlerTest extends Base
         ));
     }
 
+    public function testPullRequestMergedFromTaskBranch()
+    {
+        $this->container['dispatcher']->addListener(WebhookHandler::EVENT_PULL_REQUEST_MERGED, array($this, 'onPullRequestMerged'));
+
+        $p = new ProjectModel($this->container);
+        $this->assertEquals(1, $p->create(array('name' => 'foobar')));
+
+        $tc = new TaskCreationModel($this->container);
+        $this->assertEquals(1, $tc->create(array('title' => 'boo', 'project_id' => 1)));
+
+        $g = new WebhookHandler($this->container);
+        $g->setProjectId(1);
+
+        $this->assertNotFalse($g->parsePayload(
+            'pull_request',
+            json_decode(file_get_contents(__DIR__.'/fixtures/github_pull_request_merged.json'), true)
+        ));
+    }
+
+    public function testPullRequestClosedButNotMerged()
+    {
+        $p = new ProjectModel($this->container);
+        $this->assertEquals(1, $p->create(array('name' => 'foobar')));
+
+        $tc = new TaskCreationModel($this->container);
+        $this->assertEquals(1, $tc->create(array('title' => 'boo', 'project_id' => 1)));
+
+        $payload = json_decode(file_get_contents(__DIR__.'/fixtures/github_pull_request_merged.json'), true);
+        $payload['pull_request']['merged'] = false;
+
+        $g = new WebhookHandler($this->container);
+        $g->setProjectId(1);
+
+        $this->assertFalse($g->parsePayload('pull_request', $payload));
+    }
+
+    public function testPullRequestMergedWithInvalidBranch()
+    {
+        $p = new ProjectModel($this->container);
+        $this->assertEquals(1, $p->create(array('name' => 'foobar')));
+
+        $tc = new TaskCreationModel($this->container);
+        $this->assertEquals(1, $tc->create(array('title' => 'boo', 'project_id' => 1)));
+
+        $payload = json_decode(file_get_contents(__DIR__.'/fixtures/github_pull_request_merged.json'), true);
+        $payload['pull_request']['head']['ref'] = 'feature/task/1-fix-webhook';
+
+        $g = new WebhookHandler($this->container);
+        $g->setProjectId(1);
+
+        $this->assertFalse($g->parsePayload('pull_request', $payload));
+    }
+
+    public function testPullRequestMergedWithTaskNotFound()
+    {
+        $p = new ProjectModel($this->container);
+        $this->assertEquals(1, $p->create(array('name' => 'foobar')));
+
+        $payload = json_decode(file_get_contents(__DIR__.'/fixtures/github_pull_request_merged.json'), true);
+        $payload['pull_request']['head']['ref'] = 'task/999-fix-webhook';
+
+        $g = new WebhookHandler($this->container);
+        $g->setProjectId(1);
+
+        $this->assertFalse($g->parsePayload('pull_request', $payload));
+    }
+
+    public function testPullRequestMergedWithTaskFromAnotherProject()
+    {
+        $p = new ProjectModel($this->container);
+        $this->assertEquals(1, $p->create(array('name' => 'foobar')));
+        $this->assertEquals(2, $p->create(array('name' => 'baz')));
+
+        $tc = new TaskCreationModel($this->container);
+        $this->assertEquals(1, $tc->create(array('title' => 'boo', 'project_id' => 1)));
+
+        $g = new WebhookHandler($this->container);
+        $g->setProjectId(2);
+
+        $this->assertFalse($g->parsePayload(
+            'pull_request',
+            json_decode(file_get_contents(__DIR__.'/fixtures/github_pull_request_merged.json'), true)
+        ));
+    }
+
     public function onIssueOpened($event)
     {
         $data = $event->getAll();
@@ -455,5 +541,17 @@ class WebhookHandlerTest extends Base
         $this->assertEquals("Update README to fix #1\n\n[Commit made by @fguillot on Github](https://github.com/kanboardapp/webhook/commit/98dee3e49ee7aa66ffec1f761af93da5ffd711f6)", $data['comment']);
         $this->assertEquals('Update README to fix #1', $data['commit_message']);
         $this->assertEquals('https://github.com/kanboardapp/webhook/commit/98dee3e49ee7aa66ffec1f761af93da5ffd711f6', $data['commit_url']);
+    }
+
+    public function onPullRequestMerged($event)
+    {
+        $data = $event->getAll();
+        $this->assertEquals(1, $data['project_id']);
+        $this->assertEquals(array(1), $data['task_ids']);
+        $this->assertEquals(1, $data['tasks'][1]['id']);
+        $this->assertEquals('task/1-fix-webhook', $data['branch']);
+        $this->assertEquals(10, $data['pull_request_number']);
+        $this->assertEquals('Fix webhook', $data['pull_request_title']);
+        $this->assertEquals('https://github.com/kanboardapp/webhook/pull/10', $data['pull_request_url']);
     }
 }

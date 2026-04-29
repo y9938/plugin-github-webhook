@@ -24,6 +24,7 @@ class WebhookHandler extends Base
     const EVENT_ISSUE_LABEL_CHANGE     = 'github.webhook.issue.label';
     const EVENT_ISSUE_COMMENT          = 'github.webhook.issue.commented';
     const EVENT_COMMIT                 = 'github.webhook.commit';
+    const EVENT_PULL_REQUEST_MERGED    = 'github.webhook.pull_request.merged';
 
     /**
      * Project id
@@ -61,9 +62,75 @@ class WebhookHandler extends Base
                 return $this->parseIssueEvent($payload);
             case 'issue_comment':
                 return $this->parseCommentIssueEvent($payload);
+            case 'pull_request':
+                return $this->parsePullRequestEvent($payload);
         }
 
         return false;
+    }
+
+    /**
+     * Parse pull request events
+     *
+     * @access public
+     * @param  array   $payload   Event data
+     * @return boolean
+     */
+    public function parsePullRequestEvent(array $payload)
+    {
+        if (empty($payload['action']) || $payload['action'] !== 'closed') {
+            return false;
+        }
+
+        if (empty($payload['pull_request']['merged'])) {
+            return false;
+        }
+
+        $branch = isset($payload['pull_request']['head']['ref']) ? $payload['pull_request']['head']['ref'] : '';
+        $task_id = $this->getTaskIdFromBranch($branch);
+
+        if ($task_id === 0) {
+            return false;
+        }
+
+        $task = $this->taskFinderModel->getById($task_id);
+
+        if (empty($task) || $task['project_id'] != $this->project_id) {
+            return false;
+        }
+
+        $this->dispatcher->dispatch(
+            new GenericEvent(array(
+                'task_ids' => array((int) $task['id']),
+                'tasks' => array(
+                    $task['id'] => $task,
+                ),
+                'branch' => $branch,
+                'pull_request_number' => isset($payload['pull_request']['number']) ? $payload['pull_request']['number'] : 0,
+                'pull_request_title' => isset($payload['pull_request']['title']) ? $payload['pull_request']['title'] : '',
+                'pull_request_url' => isset($payload['pull_request']['html_url']) ? $payload['pull_request']['html_url'] : '',
+                'project_id' => $this->project_id,
+            )),
+            self::EVENT_PULL_REQUEST_MERGED
+        );
+
+        return true;
+    }
+
+    /**
+     * Extract a task id from a strict task branch name.
+     *
+     * @access private
+     * @param  string  $branch
+     * @return integer
+     */
+    private function getTaskIdFromBranch($branch)
+    {
+        if (preg_match('/^task\/(\d+)(?:$|[-_\/])/', $branch, $matches) !== 1) {
+            return 0;
+        }
+
+        return (int) $matches[1];
     }
 
     /**
@@ -113,9 +180,15 @@ class WebhookHandler extends Base
                 continue;
             }
 
+            $first_task_id = reset($valid_task_ids);
+            $first_task = $tasks_data[$first_task_id];
+
             // Dispatch single event with ALL task IDs
             $this->dispatcher->dispatch(
                 new GenericEvent(array(
+                    'task_id' => (int) $first_task['id'],
+                    'title' => $first_task['title'],
+                    'comment' => $commit['message']."\n\n[".t('Commit made by @%s on Github', $commit['author']['username']).']('.$commit['url'].')',
                     'task_ids' => $valid_task_ids,
                     'tasks' => $tasks_data,
                     'commit_message' => $commit['message'],

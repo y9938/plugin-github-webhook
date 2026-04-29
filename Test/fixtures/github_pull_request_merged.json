@@ -1,0 +1,12 @@
+{
+    "action": "closed",
+    "pull_request": {
+        "number": 10,
+        "title": "Fix webhook",
+        "html_url": "https://github.com/kanboardapp/webhook/pull/10",
+        "merged": true,
+        "head": {
+            "ref": "task/1-fix-webhook"
+        }
+    }
+}
