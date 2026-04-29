@@ -1,6 +1,6 @@
 name := "GithubWebhookPlus"
 title := "Github Webhook Plus"
-version := "1.1.2"
+version := "1.2.0"
 compatible_version := "1.2.16"
 repo := "y9938/plugin-github-webhook-plus"
 plugin_key := "github-webhook-plus"
@@ -11,8 +11,8 @@ website_dir := env('WEBSITE_DIR', env('HOME', '') + '/diff_repo_external/kanboar
 release notes:
     @git tag -a "v{{version}}" -m "Plugin {{title}} v{{version}}"
     @git push origin "v{{version}}"
-    @git archive "v{{version}}" --format=zip --prefix={{name}}/ -o {{name}}-{{version}}.zip
-    @gh release create "v{{version}}" "{{name}}-{{version}}.zip" --repo {{repo}} --verify-tag --title "Plugin {{title}} v{{version}}" --notes "{{notes}}"
+    @git archive "v{{version}}" --format=zip --prefix="{{name}}/" -o "{{name}}-{{version}}.zip"
+    @gh release create "v{{version}}" "{{name}}-{{version}}.zip" --repo "{{repo}}" --verify-tag --title "Plugin {{title}} v{{version}}" --notes "{{notes}}"
 
 # Create a pull request on the website repository
 [script]
@@ -82,7 +82,8 @@ sync-compatible-version:
     @sed -i -E "0,/^- Kanboard .*/s//- Kanboard >= {{compatible_version}}/" README.md
     @echo "Updated compatibility version to {{compatible_version}}"
 
-# Sync plugin version to Plugin.php
-sync-plugin-version:
-    @sed -i -E "/function getPluginVersion\\(\\)/,/^    }/ s|(return ')[^']*(';)|\1{{version}}\2|" Plugin.php
-    @echo "Updated plugin version to {{version}}"
+# Sync plugin version to justfile and Plugin.php
+sync-plugin-version new_version:
+    @sed -i -E 's|^version := "[^"]*"|version := "{{new_version}}"|' justfile
+    @sed -i -E "/function getPluginVersion\\(\\)/,/^    }/ s|(return ')[^']*(';)|\1{{new_version}}\2|" Plugin.php
+    @echo "Updated plugin version to {{new_version}}"
