@@ -14,6 +14,10 @@ release notes:
     @git archive "v{{version}}" --format=zip --prefix="{{name}}/" -o "{{name}}-{{version}}.zip"
     @gh release create "v{{version}}" "{{name}}-{{version}}.zip" --repo "{{repo}}" --verify-tag --title "Plugin {{title}} v{{version}}" --notes "{{notes}}"
 
+# Create zip archive
+archive:
+    @git archive HEAD --format=zip --prefix="{{name}}/" -o "{{name}}-{{version}}.zip"
+
 # Create a pull request on the website repository
 [script]
 plugins-pr:
